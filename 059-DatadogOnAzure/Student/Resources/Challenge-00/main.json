@@ -3,10 +3,12 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "AdminPassword": {
-            "defaultvalue": "demouser"
+            "defaultValue": "demo!pass123",
+            "type": "SecureString"
         },
         "AdminUsername": {
-            "defaultvalue": "demo!pass123"
+            "defaultValue": "demouser",
+            "type": "String"
         },
         "Location": {
             "defaultValue": "[deployment().location]",
