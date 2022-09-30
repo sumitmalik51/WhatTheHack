@@ -3,11 +3,9 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "AdminPassword": {
-            "defaultValue": "demo!pass123",
             "type": "SecureString"
         },
         "AdminUsername": {
-            "defaultValue": "demouser",
             "type": "String"
         },
         "Location": {
