@@ -695,7 +695,7 @@
               "Size": "Standard_D4s_v3",
                "ImagePublisher": "microsoftvisualstudio",
                         "ImageOffer": "visualstudio2019latest",
-                        "Imagesku": "vs-2019-comm-latest-ws2019"
+                        "ImageVersion": "vs-2019-comm-latest-ws2019"
                        
           }
       ],
