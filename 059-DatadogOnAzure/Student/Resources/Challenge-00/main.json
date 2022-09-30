@@ -693,9 +693,9 @@
               "Name": "[format('vmwthvsd{0}', variables('NameSuffix'))]",
               "NIC": "[format('nic-wth-monitor-vs-d-{0}', variables('NameSuffix'))]",
               "Size": "Standard_D4s_v3",
-               "publisher": "microsoftvisualstudio",
-                        "offer": "visualstudio2019latest",
-                        "sku": "vs-2019-comm-latest-ws2019"
+               "ImagePublisher": "microsoftvisualstudio",
+                        "ImageOffer": "visualstudio2019latest",
+                        "Imagesku": "vs-2019-comm-latest-ws2019"
                        
           }
       ],
