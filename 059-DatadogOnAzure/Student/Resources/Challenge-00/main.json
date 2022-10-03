@@ -11,7 +11,7 @@
             "type": "String"
         },
         "Location": {
-            "defaultValue": "[deployment().location]",
+            "defaultValue": "eastus",
             "type": "String"
         },
         "TimeStamp": {
