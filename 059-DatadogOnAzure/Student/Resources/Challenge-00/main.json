@@ -15,7 +15,7 @@
             "type": "String"
         },
         "TimeStamp": {
-            "defaultValue": "[utcNow('yyyyMMddhhmmss')]",
+            "defaultValue": "subdeployment",
             "type": "String"
         }
     },
