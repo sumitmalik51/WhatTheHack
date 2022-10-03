@@ -3,11 +3,11 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "AdminPassword": {
-         
+            
             "type": "SecureString"
         },
         "AdminUsername": {
-        
+           
             "type": "String"
         },
         "Location": {
@@ -2598,7 +2598,7 @@
                         "value": "[variables('AksName')]"
                     },
                     "NodeResourceGroup": {
-                        "value": "[format('{0}-rg-wth-monitor-aks-d-{1}', deployment().name, variables('LocationShort')[parameters('Location')])]"
+                        "value": "rg-wth-monitor-aks-d"
                     },
                     "OmsWorkspaceId": {
                         "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, format('{0}-rg-wth-monitor-d-{1}', deployment().name, variables('LocationShort')[parameters('Location')])), 'Microsoft.Resources/deployments', format('LogAnalyticsWorkspace_{0}', parameters('TimeStamp'))), '2019-10-01').outputs.ResourceId.value]"
