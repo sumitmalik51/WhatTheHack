@@ -1,99 +1,60 @@
-# Challenge 03 - <Title of Challenge>
+# Challenge 03 - Monitoring Azure Virtual Machines
 
 [< Previous Challenge](./Challenge-02.md) - **[Home](../README.md)** - [Next Challenge >](./Challenge-04.md)
 
-***This is a template for a single challenge. The italicized text provides hints & examples of what should or should NOT go in each section.  You should remove all italicized & sample text and replace with your content.***
-
-## Pre-requisites (Optional)
-
-*Your hack's "Challenge 0" should cover pre-requisites for the entire hack, and thus this section is optional and may be omitted.  If you wish to spell out specific previous challenges that must be completed before starting this challenge, you may do so here.*
-
 ## Introduction
 
-*This section should provide an overview of the technologies or tasks that will be needed to complete the this challenge.  This includes the technical context for the challenge, as well as any new "lessons" the attendees should learn before completing the challenge.*
+In this challenge you will put together a comprehensive solution to monitor virtual machine operations. This will include the 4 golden signals correlated with relevant platform metrics, linked by tags, and will serve as building blocks when you eventually scale out and/or add regions, shards, and promote your code to production through staging from development environments.
 
-*Optionally, the coach or event host is encouraged to present a mini-lesson (with a PPT or video) to set up the context & introduction to each challenge. A summary of the content of that mini-lesson is a good candidate for this Introduction section*
+### Understanding Azure VM Scale Sets
 
-*For example:*
+Before you get to the challenge, you should understand a little more about how Azure VM scale sets work. Azure VM scale sets let you create and manage a group of like-minded load balanced VMs. With scale sets, all VM instances are created from the same base OS image and configuration. This is because as scale sets scale up, new VM instances must be alike.
 
-When setting up an IoT device, it is important to understand how 'thingamajigs' work. Thingamajigs are a key part of every IoT device and ensure they are able to communicate properly with edge servers. Thingamajigs require IP addresses to be assigned to them by a server and thus must have unique MAC addresses. In this challenge, you will get hands on with a thingamajig and learn how one is configured.
+For more info on Azure VM Scale Sets, see: [What are Virtual Machine Scale Sets?](https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/overview)
+
+A common practice with VM scale sets is to have an automation script configured to run when VM instances are created to configure the server and deploy software on it. This is how the eShopOnWeb website is deployed on the VM instances of the scale set.
 
 ## Description
 
-*This section should clearly state the goals of the challenge and any high-level instructions you want the students to follow. You may provide a list of specifications required to meet the goals. If this is more than 2-3 paragraphs, it is likely you are not doing it right.*
+For this challenge, you will need to install and configure the Datadog agent on the Azure VM scale set which runs the eShopOnWeb website. Normally, the configuration of Datadog on a VM scale set's VM instances would be included as part of the automation before the deployment of the scale set itself. However for this hack, we want you to learn how to perform this configuration. 
 
-***NOTE:** Do NOT use ordered lists as that is an indicator of 'step-by-step' instructions. Instead, use bullet lists to list out goals and/or specifications.*
+To make this possible, we have provided you a way to hook into the automation process for the VM scale set. 
+- The VM scale set is configured to look for a PowerShell script named `SetupDatadogOnWebServers.ps1` in an Azure Blob Storage container in the eShopOnWeb Azure environment.  
+- The container name is `/scripts` and the storage account is named with a prefix of `bootstrap` followed by a random set of characters. (For example `bootstrapXXXXXXXXXX`)
+- In the `/Challenge-03` folder of your student resource package, you will find a PowerShell script named `SetupDatadogOnWebServers.ps1`.  This script is empty and you will need to figure out what to put in it to configure Datadog on the web servers.
+- Upload the completed script to the `/scripts` container of the storage account named with the prefix `bootstrap` in the eShopOnWeb Azure environment. 
+- After the updated `SetupDatadogOnWebServers.ps1` script has been uploaded, delete the VM instances of the VM scale set.  Azure will automatically create new VM instances to replace the ones you deleted.  These new VM instances should run your updated script.
 
-***NOTE:** You may use Markdown sub-headers to organize key sections of your challenge description.*
 
-*Optionally, you may provide resource files such as a sample application, code snippets, or templates as learning aids for the students. These files are stored in the hack's `Student/Resources` folder. It is the coach's responsibility to package these resources into a Resources.zip file and provide it to the students at the start of the hack.*
+In this challenge you need to complete the following management tasks:
 
-***NOTE:** Do NOT provide direct links to files or folders in the What The Hack repository from the student guide. Instead, you should refer to the Resource.zip file provided by the coach.*
+Manually update the configuration on the SQL, IIS and Visual Studio VMs in order to add Datadog monitoring of the following: 
+- Logs
+- Live Process Monitoring
+- Network Monitoring
 
-***NOTE:** As an exception, you may provide a GitHub 'raw' link to an individual file such as a PDF or Office document, so long as it does not open the contents of the file in the What The Hack repo on the GitHub website.*
+Create a new dashboard that will contain the graphs typically included for an infrastructure host, but add a graph for logs, live processes and network monitoring. 
 
-***NOTE:** Any direct links to the What The Hack repo will be flagged for review during the review process by the WTH V-Team, including exception cases.*
+Update the dashboard to handle a drop-down via template variables for:
+- Environment
+- Host
+- Region
 
-*Sample challenge text for the IoT Hack Of The Century:*
-
-In this challenge, you will properly configure the thingamajig for your IoT device so that it can communicate with the mother ship.
-
-You can find a sample `thingamajig.config` file in the `/ChallengeXX` folder of the Resources.zip file provided by your coach. This is a good starting reference, but you will need to discover how to set exact settings.
-
-Please configure the thingamajig with the following specifications:
-- Use dynamic IP addresses
-- Only trust the following whitelisted servers: "mothership", "IoTQueenBee" 
-- Deny access to "IoTProxyShip"
-
-You can view an architectural diagram of an IoT thingamajig here: [Thingamajig.PDF](/Student/Resources/Architecture.PDF?raw=true).
+Use Azure Policy to enable Configuration Management resources to monitor VM operations and performance.
+- Configure Update Management for all virtual machines
+- Enable VM Update Management solution
+- Enable Automatic OS image upgrades for VM Scaleset
+- Add a metric for Total Update Deployment Runs to dashboard
 
 ## Success Criteria
 
-*Success criteria goes here. The success criteria should be a list of checks so a student knows they have completed the challenge successfully. These should be things that can be demonstrated to a coach.* 
-
-*The success criteria should not be a list of instructions.*
-
-*Success criteria should always start with language like: "Validate XXX..." or "Verify YYY..." or "Show ZZZ..." or "Demonstrate you understand VVV..."*
-
-*Sample success criteria for the IoT sample challenge:*
-
 To complete this challenge successfully, you should be able to:
-- Verify that the IoT device boots properly after its thingamajig is configured.
-- Verify that the thingamajig can connect to the mothership.
-- Demonstrate that the thingamajic will not connect to the IoTProxyShip
+- Show your dashboard with VM metrics, logs, process monitoring, Azure Automation and networking with a drop-down selector for hosts.
 
 ## Learning Resources
 
-_List of relevant links and online articles that should give the attendees the knowledge needed to complete the challenge._
-
-*Think of this list as giving the students a head start on some easy Internet searches. However, try not to include documentation links that are the literal step-by-step answer of the challenge's scenario.*
-
-***Note:** Use descriptive text for each link instead of just URLs.*
-
-*Sample IoT resource links:*
-
-- [What is a Thingamajig?](https://www.bing.com/search?q=what+is+a+thingamajig)
-- [10 Tips for Never Forgetting Your Thingamajic](https://www.youtube.com/watch?v=dQw4w9WgXcQ)
-- [IoT & Thingamajigs: Together Forever](https://www.youtube.com/watch?v=yPYZpwSpKmA)
-
-## Tips
-
-*This section is optional and may be omitted.*
-
-*Add tips and hints here to give students food for thought. Sample IoT tips:*
-
-- IoTDevices can fail from a broken heart if they are not together with their thingamajig. Your device will display a broken heart emoji on its screen if this happens.
-- An IoTDevice can have one or more thingamajigs attached which allow them to connect to multiple networks.
-
-## Advanced Challenges (Optional)
-
-*If you want, you may provide additional goals to this challenge for folks who are eager.*
-
-*This section is optional and may be omitted.*
-
-*Sample IoT advanced challenges:*
-
-Too comfortable?  Eager to do more?  Try these additional challenges!
-
-- Observe what happens if your IoTDevice is separated from its thingamajig.
-- Configure your IoTDevice to connect to BOTH the mothership and IoTQueenBee at the same time.
+- [NPM for Windows](https://docs.datadoghq.com/network_monitoring/performance/setup/?tab=agentwindows) 
+- [Template Variables for Dashboards](https://docs.datadoghq.com/dashboards/template_variables/)
+- [Live Process monitoring configuration](https://docs.datadoghq.com/infrastructure/process/?tab=linuxwindows) 
+- [Dashboard docs](https://docs.datadoghq.com/dashboards) 
+- [Dashboard copy and paste](https://www.datadoghq.com/blog/copy-paste-widget/)

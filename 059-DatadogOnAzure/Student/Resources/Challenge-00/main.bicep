@@ -2,7 +2,7 @@ targetScope = 'subscription'
 
 @secure()
 param AdminPassword string
-param AdminUsername string
+param AdminUsername string = 'wthadmin'
 param Location string = deployment().location
 param TimeStamp string = utcNow('yyyyMMddhhmmss')
 
@@ -675,7 +675,7 @@ var VirtualMachines = [
     Size: 'Standard_DS3_v2'
     ImageVersion: 'Standard'
     ImagePublisher: 'MicrosoftSQLServer'
-    ImageOffer: 'SQL2016SP1-WS2016'
+    ImageOffer: 'sql2019-ws2022'
   }
   {
     Name: 'vmwthvsd${NameSuffix}'
