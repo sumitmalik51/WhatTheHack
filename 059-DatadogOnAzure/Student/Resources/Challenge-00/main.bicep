@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
 @secure()
-param AdminPassword string
+param AdminPassword string = 'demo!pass123'
 param AdminUsername string = 'wthadmin'
 param Location string = deployment().location
 param TimeStamp string = utcNow('yyyyMMddhhmmss')
